@@ -1,0 +1,310 @@
+
+###############################
+#      CONFIGURATION I3       #
+###############################
+
+# Documentation https://i3wm.org/docs/userguide.html 
+# Mod key
+set $mod Mod4
+set $alt Mod1
+# Disable focus on mouse hover
+focus_follows_mouse no
+
+# Font
+font pango: Cantarell 8
+
+# Start XDG autostart .desktop files using dex. See also
+# https://wiki.archlinux.org/index.php/XDG_Autostart
+exec --no-startup-id dex --autostart --environment i3
+
+# xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
+# screen before suspend. Use loginctl lock-session to lock your screen.
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+
+# NM-APPLET (RÉSEAUX)
+exec --no-startup-id nm-applet
+
+# CONTROLE volume
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+ unmute && notify-send --expire-time=600 "Volume Up"
+bindsym XF86AudioLowerVolume exec amixer -q set Master 5%- unmute && notify-send --expire-time=600 "Volume Down"
+bindsym XF86AudioMute exec amixer -q set Master toggle && notify-send --expire-time=600 "Volume Mute"
+
+# CONTROLE du luminausité
+bindsym XF86MonBrightnessUp exec /home/rjl/.script/increase-brightness 100
+bindsym XF86MonBrightnessDown exec /home/rjl/.script/decrease-brightness 100
+
+
+###############################
+#         KEYBINDING          #
+###############################
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec gnome-terminal
+bindsym $alt+t exec gnome-terminal
+bindsym $alt+f exec urxvt
+# kill focused window
+bindsym $mod+Shift+q kill
+bindsym $alt+F4 kill
+
+# ROFI
+    # launcher
+bindsym $mod+r exec ~/.script/rofilauncher
+    # finder
+bindsym $mod+Shift+f exec ~/.script/rofifinder
+
+# change focus
+bindsym $mod+j focus left
+bindsym $mod+Left focus left
+
+bindsym $mod+k focus down
+bindsym $mod+Down focus down
+
+bindsym $mod+l focus up
+bindsym $mod+Up focus up
+
+bindsym $mod+m focus right
+bindsym $mod+Right focus right
+
+
+# move focused window
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+Left move left
+
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+Down move down
+
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+Up move up
+
+bindsym $mod+Shift+m move right
+bindsym $mod+Shift+Right move right
+
+# Split Mode (horizontale,verticale)
+bindsym $mod+$alt+c split h
+bindsym $mod+$alt+v split v
+
+# Container layout (stacked, tabbed, toggle split)
+bindsym $mod+a layout tabbed
+bindsym $mod+z layout stacking
+bindsym $mod+s layout toggle split 
+
+    # toggle fullscreen mode
+bindsym $mod+w fullscreen toggle
+    # toggle tiling / floating
+bindsym $mod+x floating toggle
+    # change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# Container focus (parent, child)
+bindsym $mod+u focus parent
+bindsym $mod+i focus child
+
+
+# Recharger ls fichier de configuration
+bindsym $mod+$alt+r reload
+# Redemarer i3
+bindsym $mod+Control+r restart
+# Quitter i3
+bindsym $alt+Ctrl+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# I3-LOCK
+bindsym $mod+Control+l exec "/home/rjl/.script/locki3"
+# Auto vérouillage 
+exec xautolock -detectsleep -time 5 -locker "/home/rjl/.script/locki3"
+
+###############################
+#        WORKSPACES           #
+###############################
+# monitor
+set $main eDP-1
+set $vga   VGA-1
+set $hdmi  HDMI-1
+
+
+# Ecran associé à chaque Workspace
+workspace $ws1 output $main
+workspace $ws2 output $main
+workspace $ws3 output $main
+workspace $ws4 output $main
+workspace $ws5 output $vga
+workspace $ws6 output $vga
+workspace $ws7 output $vga
+workspace $ws8 output $hdmi
+workspace $ws9 output $hdmi
+workspace $ws10 output $vga
+
+# Workspaces
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+# Changement de bureau
+bindsym $mod+ampersand workspace number $ws1
+bindsym $mod+eacute workspace number $ws2
+bindsym $mod+quotedbl workspace number $ws3
+bindsym $mod+apostrophe workspace number $ws4
+bindsym $mod+parenleft workspace number $ws5
+bindsym $mod+minus workspace number $ws6
+bindsym $mod+egrave workspace number $ws7
+bindsym $mod+underscore workspace number $ws8
+bindsym $mod+ccedilla workspace number $ws9
+bindsym $mod+agrave workspace number $ws10
+          
+# Déplacer un app vers un autre bureau 
+bindsym $mod+Shift+ampersand move container to workspace number $ws1
+bindsym $mod+Shift+eacute move container to workspace number $ws2
+bindsym $mod+Shift+quotedbl move container to workspace number $ws3
+bindsym $mod+Shift+apostrophe move container to workspace number $ws4
+bindsym $mod+Shift+parenleft move container to workspace number $ws5
+bindsym $mod+Shift+minus move container to workspace number $ws6
+bindsym $mod+Shift+egrave move container to workspace number $ws7
+bindsym $mod+Shift+underscore move container to workspace number $ws8
+bindsym $mod+Shift+ccedilla move container to workspace number $ws9
+bindsym $mod+Shift+agrave move container to workspace number $ws10
+
+workspace_auto_back_and_forth yes
+
+# Taille des fenêtres flottantes
+floating_minimum_size 75 x 50
+floating_maximum_size -1 x -1
+
+# Rédimensionnage de fentre (Souris valable)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym m resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+
+bindsym $mod+t mode "resize"
+
+
+# ECRAN EXTERNE
+
+set $mode_display Ext Screen (v) VGA ON, (h) HDMI ON, (x) VGA OFF, (y) HDMI OFF
+mode "$mode_display" {
+    bindsym v exec --no-startup-id xrandr --output VGA-1 --auto --right-of eDP-1, mode "default"
+    bindsym h exec --no-startup-id xrandr --output HDMI-1 --auto --right-of eDP-1, mode "default"
+    bindsym x exec --no-startup-id xrandr --output VGA-1 --auto --off, mode "default"
+    bindsym y exec --no-startup-id xrandr --output HDMI-1 --auto --off, mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+p mode "$mode_display"
+
+
+
+######################
+assign [class="xdman-Main"]	$ws10 
+for_window [class="xdman-Main"] floating enable
+for_window [class="URxvt"] floating enable
+#######################
+
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+#bar {
+#        status_command i3status
+#}
+
+# Gap settings begin
+
+# gaps
+# disable window titlebars
+for_window [class="^.*"] border pixel 0
+
+gaps inner 6
+gaps outer 0
+
+bindsym $mod+Shift+g gaps inner all set 8; gaps outer all set 0
+bindsym $mod+Shift+h gaps inner all set 0; gaps outer all set 0
+
+# Only enable gaps on a workspace when there is at least one container
+smart_gaps on
+
+# Activate smart borders (always)
+#smart_borders on
+
+# Activate smart borders (only when there are effectively no gaps)
+#smart_borders no_gaps
+
+# Hide edge borders only if there is one window with no gaps
+hide_edge_borders smart_no_gaps
+
+# end gap setting
+
+
+
+# WINDOW SETTING
+new_window none
+new_float none
+
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="bubble"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [window_role="Preferences"] floating enable
+
+for_window [window_type="dialog"] floating enable
+for_window [window_type="menu"] floating enable
+
+# floating windows
+for_window [class="Arandr"] floating enable, sticky enable, border none
+
+
+
+# Auto Start 
+# PICOM X COMPOSER 
+exec --no-startup-id picom -b
+
+# POLYBAR 
+exec_always /home/rjl/.config/polybar/polybar.sh
+
+# WALLPAPER
+exec_always --no-startup-id feh --no-fehbg --bg-fill /home/rjl/.wallpaper/wall.jpg
+#exec_always --no-startup-id ~/.script/wallpaper
+
+# FLUX
+exec --no-startup-id fluxgui &
+
+#SCREENSHOT
+# image magick : hole screen
+bindsym Print exec "import -window root ~/Images/Screenshots/screenshot_$(date +%d-%b-%Y_%H-%M-%S).png"
+
+# xclip+maim
+bindsym $mod+Print exec ~/.script/screenshot
+
+# Shortcut
+bindsym XF86MyComputer exec nautilus
+
+
+# POLKIT
+exec --no-startup-id /usr/bin/lxpolkit
